@@ -265,7 +265,7 @@ const CATEGORIES = [
 // ║  Add/remove/rename columns freely — the site handles it.         ║
 // ║                                                                   ║
 const USE_SHEETS     = true;
-const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1750394844&single=true&output=csv';
+const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1308401092&single=true&output=csv';
 
 // ║                                                                   ║
 // ║  ③ FALLBACK INVENTORY (used when USE_SHEETS = false)             ║
@@ -301,7 +301,7 @@ let activeFilter = CATEGORIES[0]?.value || 'all';
 
 // ── STARTUP
 async function init() {
-  if (USE_SHEETS && SHEETS_CSV_URL !== 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1750394844&single=true&output=csv') {
+  if (USE_SHEETS && SHEETS_CSV_URL !== 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1308401092&single=true&output=csv') {
     try {
       const text = await (await fetch(SHEETS_CSV_URL)).text();
       allItems = parseCSV(text);
