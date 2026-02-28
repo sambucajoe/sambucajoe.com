@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMBUCA JOE</title>
+<style>
+@font-face {
+  font-family: 'VCR';
+  src: url('https://cdn.jsdelivr.net/gh/webfontkit/vcr-osd-mono@1.0.0/VCR_OSD_MONO_1.001.ttf') format('truetype');
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root { --f: 'VCR', 'Courier New', monospace; }
+
+html, body {
+  background: #fff;
+  color: #000;
+  font-family: var(--f);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ══ NAV ════════════════════════════════════════════════════
+   + far left · NEW MENS WOMENS / SLIDES ACCESSORIES center · cart right
+══════════════════════════════════════════════════════════════ */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  padding: 12px 20px 8px;
+}
+
+.nav-plus {
+  font-size: 24px;
+  font-weight: 200;
+  color: #000;
+  cursor: pointer;
+  background: none;
+  border: none;
+  line-height: 1;
+  font-family: sans-serif;
+  justify-self: start;
+  margin-top: -2px;
+}
+
+.nav-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.nav-row { display: flex; gap: 20px; }
+
+.nav-link {
+  font-family: var(--f);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #c0c0c0;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: #000; }
+.nav-link.active { color: #000; }
+
+.nav-cart {
+  justify-self: end;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.nav-cart svg {
+  width: 17px; height: 17px;
+  stroke: #000; fill: none; stroke-width: 1.1;
+}
+
+/* ══ GRID ════════════════════════════════════════════════════
+   6 columns. No tile backgrounds. Products float on white.
+   Only the product code appears below — no price, no border.
+   Exactly matching the screenshot.
+══════════════════════════════════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 8px 10px 80px;
+}
+
+.tile {
+  padding: 16px 10px 22px;
+  cursor: pointer;
+  text-align: center;
+}
+.tile.sold { cursor: default; }
+
+.tile-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* Real product image */
+.tile-img img {
+  max-width: 88%;
+  max-height: 88%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.5s cubic-bezier(.22,.68,0,1.2);
+}
+.tile:hover .tile-img img { transform: scale(1.06); }
+
+/* SVG placeholder — same float, no background */
+.ph-svg {
+  width: 82%;
+  opacity: 0.11;
+  transition: transform 0.5s cubic-bezier(.22,.68,0,1.2);
+}
+.tile:hover .ph-svg { transform: scale(1.06); }
+
+/* Sold-out: ghost */
+.tile.sold .tile-img { opacity: 0.3; }
+
+/* Label block — code, name, qty, price */
+.tile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.tile-code {
+  font-family: var(--f);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #000;
+}
+.tile-name {
+  font-family: var(--f);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #888;
+  line-height: 1.3;
+}
+.tile-meta {
+  font-family: var(--f);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #bbb;
+}
+.tile.sold .tile-code,
+.tile.sold .tile-name { color: #ccc; }
+
+/* ══ MODAL ════════════════════════════════════════════════════ */
+.modal-wrap {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.97);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+.modal-wrap.open { display: flex; }
+
+.modal { width: 100%; max-width: 320px; }
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.modal-id { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #bbb; }
+.modal-x {
+  background: none; border: none; font-family: var(--f);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #bbb; cursor: pointer;
+}
+.modal-x:hover { color: #000; }
+
+.modal-name  { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; line-height:1.3; margin-bottom:4px; }
+.modal-color { font-size: 10px; letter-spacing: 0.1em;  text-transform: uppercase; color:#aaa; margin-bottom:16px; }
+.modal-price { font-size: 12px; letter-spacing: 0.08em; margin-bottom:22px; padding-bottom:18px; border-bottom:1px solid #ebebeb; }
+
+.sz-label { font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:#bbb; margin-bottom:9px; }
+
+.sz-grid {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  gap: 5px;
+  margin-bottom: 22px;
+}
+.sz-btn {
+  padding: 9px 2px;
+  border: 1px solid #ddd;
+  background: none;
+  font-family: var(--f);
+  font-size: 10px;
+  cursor: pointer;
+  color: #000;
+  transition: all 0.1s;
+}
+.sz-btn:hover, .sz-btn.on { background:#000; color:#fff; border-color:#000; }
+
+.modal-dm {
+  font-size: 10px; letter-spacing:0.11em; text-transform:uppercase;
+  color:#bbb; line-height:1.85;
+  border-top:1px solid #ebebeb; padding-top:16px;
+}
+.modal-dm a { color:#000; text-decoration:none; }
+
+/* ══ FOOTER ════════════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid #ebebeb;
+  padding: 13px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.ft { font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#ccc; }
+footer a { color:#ccc; text-decoration:none; }
+footer a:hover { color:#000; }
+
+/* ══ RESPONSIVE ════════════════════════════════════════════════ */
+@media (max-width:1100px) { .grid { grid-template-columns: repeat(5,1fr); } }
+@media (max-width:860px)  { .grid { grid-template-columns: repeat(4,1fr); } }
+@media (max-width:640px)  { .grid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width:400px)  { .grid { grid-template-columns: repeat(2,1fr); } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <button class="nav-plus" title="All" onclick="filterBy('all',null)">+</button>
+  <div class="nav-center">
+    <div class="nav-row">
+      <button class="nav-link active" onclick="filterBy('new',this)">New</button>
+      <button class="nav-link" onclick="filterBy('mens',this)">Mens</button>
+      <button class="nav-link" onclick="filterBy('womens',this)">Womens</button>
+    </div>
+    <div class="nav-row">
+      <button class="nav-link" onclick="filterBy('slides',this)">Slides</button>
+      <button class="nav-link" onclick="filterBy('accessories',this)">Accessories</button>
+    </div>
+  </div>
+  <button class="nav-cart" onclick="alert('DM @sambucajoe on Instagram to purchase')">
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+  </button>
+</nav>
+
+<!-- GRID -->
+<main><div class="grid" id="grid"></div></main>
+
+<!-- FOOTER -->
+<footer>
+  <span class="ft">Sambuca Joe © 2025</span>
+  <span class="ft"><a href="mailto:hello@sambucajoe.com">Contact</a> · All Sales Final</span>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-wrap" id="modal" onclick="bgClose(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-id" id="m-code"></div>
+      <button class="modal-x" onclick="closeModal()">Close ×</button>
+    </div>
+    <div class="modal-name"  id="m-name"></div>
+    <div class="modal-color" id="m-color"></div>
+    <div class="modal-price" id="m-price"></div>
+    <div class="sz-label">Size (US)</div>
+    <div class="sz-grid" id="m-sizes"></div>
+    <div class="modal-dm">
+      DM to purchase · <a href="https://instagram.com/sambucajoe" target="_blank">@sambucajoe</a><br>
+      Authenticated · Ships insured · All sales final
+    </div>
+  </div>
+</div>
+
+<script>
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  INVENTORY MANAGEMENT                                            ║
+// ║                                                                  ║
+// ║  OPTION A — Edit the INVENTORY array below directly.            ║
+// ║                                                                  ║
+// ║  OPTION B — Google Sheets (live, no-code updates):              ║
+// ║    1. Import inventory.csv into Google Sheets                   ║
+// ║    2. File → Share → Publish to web → CSV → Copy URL           ║
+// ║    3. Paste URL into SHEETS_CSV_URL below                       ║
+// ║    4. Set USE_SHEETS = true                                      ║
+// ║    Now just edit the sheet — site updates on every page load.   ║
+// ║                                                                  ║
+// ║  COLUMNS:                                                        ║
+// ║    code   → e.g. SN-01                                          ║
+// ║    name   → full product name                                    ║
+// ║    color  → colorway                                             ║
+// ║    sizes  → pipe-separated: 9|9.5|10|10.5                       ║
+// ║    price  → e.g. $420                                            ║
+// ║    available → TRUE or FALSE                                     ║
+// ║    cat    → new | mens | womens | slides | accessories           ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+const USE_SHEETS     = false;
+const SHEETS_CSV_URL = 'YOUR_GOOGLE_SHEETS_CSV_URL_HERE';
+
+const INVENTORY = [
+  { code:'SN-01', name:'Yeezy Boost 350 V2',      color:'Beluga Reflective',    sizes:'8|8.5|9|9.5|10|11',  price:'$420', qty:4,  available:true,  cat:'new'         },
+  { code:'SN-02', name:'Air Jordan 1 Retro High',  color:'Chicago Lost & Found', sizes:'10.5|11|11.5',       price:'$380', qty:3,  available:true,  cat:'new'         },
+  { code:'SN-03', name:'Yeezy Foam Runner',         color:'Sand',                sizes:'8|10|12',            price:'$290', qty:3,  available:true,  cat:'mens'        },
+  { code:'SN-04', name:'Travis Scott Air Max 1',    color:'Baroque Brown',       sizes:'9.5|10',             price:'$950', qty:2,  available:true,  cat:'mens'        },
+  { code:'SN-05', name:'Air Jordan 4 Retro',        color:'Bred Reimagined',     sizes:'9',                  price:'$450', qty:1,  available:true,  cat:'mens'        },
+  { code:'SN-06', name:'Nike Dunk Low',              color:'Panda',              sizes:'',                   price:'$240', qty:0,  available:false, cat:'mens'        },
+  { code:'SN-07', name:'New Balance 9060',           color:'Sea Salt',           sizes:'8|9|10|11|12',       price:'$180', qty:5,  available:true,  cat:'womens'      },
+  { code:'SN-08', name:'Yeezy Boost 700',            color:'Wave Runner',        sizes:'10',                 price:'$340', qty:1,  available:true,  cat:'womens'      },
+  { code:'SN-09', name:'Yeezy Slide',                color:'Onyx',              sizes:'9|11',               price:'$130', qty:2,  available:true,  cat:'slides'      },
+  { code:'SN-10', name:'Yeezy Slide',                color:'Sand',              sizes:'8|10',               price:'$110', qty:2,  available:true,  cat:'slides'      },
+  { code:'AP-01', name:'Yeezy Gap Hoodie',           color:'Black',             sizes:'S|M|L|XL',           price:'$120', qty:4,  available:true,  cat:'mens'        },
+  { code:'AC-01', name:'New Era 59FIFTY',            color:'Chicago Bulls',     sizes:'7 1/8|7 3/8',        price:'$85',  qty:2,  available:true,  cat:'accessories' },
+];
+
+// ── SVG placeholder (transparent, floats like real product photo)
+const SHOE = `<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M16 112C50 50 112 38 152 40C192 42 228 66 258 80C278 90 300 94 308 90C316 87 316 104 304 108C272 118 32 130 16 112Z" stroke="#000" stroke-width="1.6" fill="none"/>
+  <path d="M104 40L114 10C116 4 128 4 130 10L140 40" stroke="#000" stroke-width="1.6" fill="none"/>
+  <path d="M140 40C156 36 178 38 200 48" stroke="#000" stroke-width="1.6" fill="none"/>
+  <line x1="68" y1="92" x2="262" y2="92" stroke="#000" stroke-width="0.9" opacity="0.18"/>
+</svg>`;
+
+let items = [];
+
+async function init() {
+  if (USE_SHEETS && SHEETS_CSV_URL !== 'YOUR_GOOGLE_SHEETS_CSV_URL_HERE') {
+    try { items = parseCSV(await (await fetch(SHEETS_CSV_URL)).text()); }
+    catch(e) { items = INVENTORY; }
+  } else { items = INVENTORY; }
+  renderGrid(items.filter(i => i.cat === 'new'));
+}
+
+function parseCSV(csv) {
+  return csv.trim().split('\n').slice(1).map(row => {
+    const cols=[]; let cur='',inQ=false;
+    for(const c of row){
+      if(c==='"'){inQ=!inQ;continue;}
+      if(c===','&&!inQ){cols.push(cur.trim());cur='';continue;}
+      cur+=c;
+    }
+    cols.push(cur.trim());
+    const [code,name,color,sizes,price,qty,available,cat]=cols;
+    return {code,name,color,sizes:sizes||'',price,qty:parseInt(qty)||0,available:available?.toLowerCase()==='true',cat:cat?.toLowerCase().trim()||'new'};
+  }).filter(i=>i.code);
+}
+
+function filterBy(cat, el) {
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderGrid(cat==='all' ? items : items.filter(i=>i.cat===cat));
+}
+
+function renderGrid(list) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  if(!list.length){
+    grid.innerHTML='<div style="grid-column:1/-1;padding:80px;text-align:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#ccc">No Items</div>';
+    return;
+  }
+  list.forEach(item => {
+    const t = document.createElement('div');
+    t.className = 'tile'+(item.available?'':' sold');
+    t.innerHTML = `<div class="tile-img">${SHOE}</div>
+      <div class="tile-info">
+        <div class="tile-code">${item.code}</div>
+        <div class="tile-name">${item.name}</div>
+        <div class="tile-meta">${item.available ? `Qty ${item.qty} · ${item.price}` : 'Sold Out'}</div>
+      </div>`;
+    if(item.available) t.addEventListener('click', ()=>openModal(item));
+    grid.appendChild(t);
+  });
+}
+
+function openModal(item) {
+  document.getElementById('m-code').textContent  = item.code;
+  document.getElementById('m-name').textContent  = item.name;
+  document.getElementById('m-color').textContent = item.color;
+  document.getElementById('m-price').textContent = item.price;
+  const sizes = item.sizes?item.sizes.split('|').filter(Boolean):[];
+  document.getElementById('m-sizes').innerHTML = sizes.length
+    ? sizes.map(s=>`<button class="sz-btn" onclick="pickSz(this)">${s}</button>`).join('')
+    : '<span style="font-size:10px;letter-spacing:.1em;color:#aaa;text-transform:uppercase">DM for sizing</span>';
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function pickSz(btn){document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function closeModal(){document.getElementById('modal').classList.remove('open');document.body.style.overflow='';}
+function bgClose(e){if(e.target.id==='modal')closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+init();
+</script>
+</body>
+</html>
