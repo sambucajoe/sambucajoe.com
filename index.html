@@ -34,9 +34,9 @@ nav {
 }
 
 .nav-plus {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 200;
-  color: #000;
+  color: #000000;
   cursor: pointer;
   background: none;
   border: none;
@@ -213,7 +213,7 @@ footer a:hover { color: #000; }
 <main><div class="grid" id="grid"></div></main>
 
 <footer>
-  <span class="ft">Sambuca Joe © 2025</span>
+  <span class="ft">Sambuca Joe © 2026</span>
   <span class="ft"><a href="mailto:hello@sambucajoe.com">Contact</a> · All Sales Final</span>
 </footer>
 
@@ -251,10 +251,10 @@ footer a:hover { color: #000; }
 // ║                                                                   ║
 const CATEGORIES = [
   { label: 'New',         value: 'new'         },
-  { label: 'Mens',        value: 'mens'         },
-  { label: 'Womens',      value: 'womens'       },
-  { label: 'Slides',      value: 'slides'       },
-  { label: 'Accessories', value: 'accessories'  },
+  { label: 'Pokemon',        value: 'pokemon'         },
+  { label: 'Baseball',      value: 'baseball'       },
+  { label: 'Football',      value: 'football'       },
+  { label: 'Basketball', value: 'basketball'  },
   // Add more like: { label: 'Kids', value: 'kids' }
 ];
 
@@ -264,8 +264,8 @@ const CATEGORIES = [
 // ║  The site reads your sheet live on every page load.               ║
 // ║  Add/remove/rename columns freely — the site handles it.         ║
 // ║                                                                   ║
-const USE_SHEETS     = false;
-const SHEETS_CSV_URL = 'YOUR_GOOGLE_SHEETS_CSV_URL_HERE';
+const USE_SHEETS     = true;
+const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1750394844&single=true&output=csv';
 
 // ║                                                                   ║
 // ║  ③ FALLBACK INVENTORY (used when USE_SHEETS = false)             ║
@@ -301,7 +301,7 @@ let activeFilter = CATEGORIES[0]?.value || 'all';
 
 // ── STARTUP
 async function init() {
-  if (USE_SHEETS && SHEETS_CSV_URL !== 'YOUR_GOOGLE_SHEETS_CSV_URL_HERE') {
+  if (USE_SHEETS && SHEETS_CSV_URL !== 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1750394844&single=true&output=csv') {
     try {
       const text = await (await fetch(SHEETS_CSV_URL)).text();
       allItems = parseCSV(text);
