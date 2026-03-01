@@ -56,7 +56,7 @@ nav {
 
 .nav-link {
   font-family: var(--f);
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #bbb;
@@ -120,31 +120,31 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding-top: 2px;
+  gap: 5px;
+  padding-top: 6px;
   text-align: center;
   width: 100%;
 }
 
 .tile-code {
-  font-size: 16px;
-  letter-spacing: 0.06em;
+  font-size: 22px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #000;
   font-weight: bold;
 }
 
 .tile-name {
-  font-size: 16px;
-  letter-spacing: 0.04em;
+  font-size: 20px;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #000;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .tile-meta {
-  font-size: 16px;
-  letter-spacing: 0.04em;
+  font-size: 18px;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #000;
 }
@@ -156,7 +156,7 @@ footer {
   display: flex;
   justify-content: space-between;
 }
-.ft { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #bbb; }
+.ft { font-size: 16px; letter-spacing: 0.1em; text-transform: uppercase; color: #bbb; }
 footer a { color: #bbb; text-decoration: none; }
 footer a:hover { color: #000; }
 
@@ -166,23 +166,24 @@ footer a:hover { color: #000; }
 }
 @media (max-width: 640px) {
   .grid { grid-template-columns: repeat(min(var(--cols,6), 3), 1fr) !important; }
-  .tile { padding: 12px 6px 20px; }
-  .tile-name { font-size: 13px; }
-  .tile-meta { font-size: 13px; }
-  .tile-code { font-size: 13px; }
-  .nav-link { font-size: 13px; }
+  .tile { padding: 12px 8px 24px; }
+  .tile-name { font-size: 17px; }
+  .tile-meta { font-size: 15px; }
+  .tile-code { font-size: 17px; }
+  .nav-link { font-size: 15px; }
 }
 @media (max-width: 420px) {
   .grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .tile { padding: 10px 4px 18px; }
+  .tile { padding: 10px 6px 20px; }
   .tile-info { text-align: center; align-items: center; }
-  .tile-name { font-size: 11px; letter-spacing: 0.02em; }
-  .tile-meta { font-size: 11px; }
-  .tile-code { font-size: 11px; }
+  .tile-name { font-size: 14px; letter-spacing: 0.02em; }
+  .tile-meta { font-size: 13px; }
+  .tile-code { font-size: 14px; }
   nav { padding: 10px 14px 8px; }
-  .nav-link { font-size: 11px; letter-spacing: 0.05em; }
+  .nav-link { font-size: 13px; letter-spacing: 0.05em; }
   .nav-row { gap: 14px; }
   footer { flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+  .ft { font-size: 13px; }
 }
 </style>
 </head>
