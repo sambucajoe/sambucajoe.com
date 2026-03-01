@@ -21,7 +21,6 @@ html, body {
   min-height: 100vh;
 }
 
-/* ── NAV ─────────────────────────────────────────────────────── */
 nav {
   position: sticky;
   top: 0;
@@ -78,13 +77,8 @@ nav {
 }
 .nav-cart svg { width: 17px; height: 17px; stroke: #000; fill: none; stroke-width: 1.1; }
 
-/* ── GRID ────────────────────────────────────────────────────────
-   Columns auto-scale based on item count, max 6.
-   Products float on white with no backgrounds or borders.
-─────────────────────────────────────────────────────────────── */
 .grid {
   display: grid;
-  /* set by JS via --cols custom property */
   grid-template-columns: repeat(var(--cols, 6), 1fr);
   padding: 8px 10px 80px;
 }
@@ -105,7 +99,6 @@ nav {
   overflow: hidden;
 }
 
-/* Real product photo */
 .tile-img img {
   max-width: 90%;
   max-height: 90%;
@@ -115,7 +108,6 @@ nav {
 }
 .tile:hover .tile-img img { transform: scale(1.06); }
 
-/* SVG fallback placeholder */
 .ph-svg {
   width: 82%;
   opacity: 0.11;
@@ -123,7 +115,6 @@ nav {
 }
 .tile:hover .ph-svg { transform: scale(1.06); }
 
-/* Label: code, name, qty · price */
 .tile-info {
   display: flex;
   flex-direction: column;
@@ -151,7 +142,6 @@ nav {
   color: #000;
 }
 
-/* ── MODAL ───────────────────────────────────────────────────── */
 .modal-wrap {
   display: none;
   position: fixed;
@@ -187,13 +177,11 @@ nav {
 .modal-dm { font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; color: #bbb; line-height: 1.85; border-top: 1px solid #ebebeb; padding-top: 16px; }
 .modal-dm a { color: #000; text-decoration: none; }
 
-/* ── FOOTER ──────────────────────────────────────────────────── */
 footer { border-top: 1px solid #ebebeb; padding: 13px 20px; display: flex; justify-content: space-between; }
 .ft { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #ccc; }
 footer a { color: #ccc; text-decoration: none; }
 footer a:hover { color: #000; }
 
-/* ── RESPONSIVE ──────────────────────────────────────────────── */
 @media (max-width: 900px)  { .grid { grid-template-columns: repeat(min(var(--cols,6), 4), 1fr) !important; } }
 @media (max-width: 640px)  { .grid { grid-template-columns: repeat(min(var(--cols,6), 3), 1fr) !important; } }
 @media (max-width: 400px)  { .grid { grid-template-columns: repeat(2, 1fr) !important; } }
@@ -201,7 +189,6 @@ footer a:hover { color: #000; }
 </head>
 <body>
 
-<!-- NAV — categories are built automatically from your inventory -->
 <nav>
   <button class="nav-plus" title="Show all" onclick="filterBy('all', null)">+</button>
   <div class="nav-center" id="navCenter"></div>
@@ -217,7 +204,6 @@ footer a:hover { color: #000; }
   <span class="ft"><a href="mailto:realsambucajoe@gmail.com">Contact</a> · All Sales Final</span>
 </footer>
 
-<!-- MODAL -->
 <div class="modal-wrap" id="modal" onclick="bgClose(event)">
   <div class="modal">
     <div class="modal-top">
@@ -237,58 +223,25 @@ footer a:hover { color: #000; }
 </div>
 
 <script>
-// ╔═══════════════════════════════════════════════════════════════════╗
-// ║                        CONFIGURATION                             ║
-// ╠═══════════════════════════════════════════════════════════════════╣
-// ║                                                                   ║
-// ║  ① CATEGORIES                                                     ║
-// ║  Edit this list to change your nav categories.                    ║
-// ║  Order here = order they appear in nav.                           ║
-// ║  The label is what shows in nav, value is what you put in the     ║
-// ║  "cat" column of your spreadsheet.                                ║
-// ║                                                                   ║
-// ║  Format: { label: 'Display Name', value: 'spreadsheet-value' }   ║
-// ║                                                                   ║
+// ── ① CATEGORIES — edit labels and values to match your sheet's "cat" column
 const CATEGORIES = [
   { label: 'New',         value: 'new'         },
-  { label: 'Pokemon',        value: 'pokemon'         },
-  { label: 'Baseball',      value: 'baseball'       },
-  { label: 'Football',      value: 'football'       },
-  { label: 'Accessories', value: 'accessories'  },
-  // Add more like: { label: 'Kids', value: 'kids' }
+  { label: 'Pokemon',     value: 'pokemon'     },
+  { label: 'Baseball',    value: 'baseball'    },
+  { label: 'Football',    value: 'football'    },
+  { label: 'Accessories', value: 'accessories' },
 ];
 
-// ║                                                                   ║
-// ║  ② GOOGLE SHEETS                                                  ║
-// ║  Set USE_SHEETS = true and paste your published CSV URL.          ║
-// ║  The site reads your sheet live on every page load.               ║
-// ║  Add/remove/rename columns freely — the site handles it.         ║
-// ║                                                                   ║
+// ── ② GOOGLE SHEETS — set USE_SHEETS = true and paste your CSV URL
 const USE_SHEETS     = true;
 const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1308401092&single=true&output=csv';
 
-// ║                                                                   ║
-// ║  ③ FALLBACK INVENTORY (used when USE_SHEETS = false)             ║
-// ║  image: paste an imgur or any direct image URL, or leave ''       ║
-// ║  available: true = show on site, false = hide completely          ║
-// ║                                                                   ║
+// ── ③ FALLBACK INVENTORY — only used if Google Sheets fetch fails
 const INVENTORY = [
-  { code:'SN-01', name:'Yeezy Boost 350 V2',     color:'Beluga Reflective',    sizes:'8|8.5|9|9.5|10|11', price:'$420', qty:4, available:true,  cat:'new',   image:'' },
-  { code:'SN-02', name:'Air Jordan 1 Retro High', color:'Chicago Lost & Found', sizes:'10.5|11|11.5',      price:'$380', qty:3, available:true,  cat:'new',   image:'' },
-  { code:'SN-03', name:'Yeezy Foam Runner',        color:'Sand',               sizes:'8|10|12',            price:'$290', qty:3, available:true,  cat:'mens',  image:'' },
-  { code:'SN-04', name:'Travis Scott Air Max 1',   color:'Baroque Brown',      sizes:'9.5|10',             price:'$950', qty:2, available:true,  cat:'mens',  image:'' },
-  { code:'SN-05', name:'Air Jordan 4 Retro',       color:'Bred Reimagined',    sizes:'9',                  price:'$450', qty:1, available:true,  cat:'mens',  image:'' },
-  { code:'SN-06', name:'Nike Dunk Low',             color:'Panda',             sizes:'',                   price:'$240', qty:0, available:false, cat:'mens',  image:'' },
-  { code:'SN-07', name:'New Balance 9060',          color:'Sea Salt',          sizes:'8|9|10|11|12',       price:'$180', qty:5, available:true,  cat:'womens',image:'' },
-  { code:'SN-08', name:'Yeezy Boost 700',           color:'Wave Runner',       sizes:'10',                 price:'$340', qty:1, available:true,  cat:'womens',image:'' },
-  { code:'SN-09', name:'Yeezy Slide',               color:'Onyx',             sizes:'9|11',               price:'$130', qty:2, available:true,  cat:'slides',image:'' },
-  { code:'SN-10', name:'Yeezy Slide',               color:'Sand',             sizes:'8|10',               price:'$110', qty:2, available:true,  cat:'slides',image:'' },
-  { code:'AP-01', name:'Yeezy Gap Hoodie',          color:'Black',            sizes:'S|M|L|XL',           price:'$120', qty:4, available:true,  cat:'mens',  image:'' },
-  { code:'AC-01', name:'New Era 59FIFTY',           color:'Chicago Bulls',    sizes:'7 1/8|7 3/8',        price:'$85',  qty:2, available:true,  cat:'accessories', image:'' },
+  { code:'SN-01', name:'Yeezy Boost 350 V2',     color:'Beluga Reflective',   sizes:'8|8.5|9|9.5|10|11', price:'$420', qty:4, available:true, cat:'new', image:'' },
+  { code:'SN-02', name:'Air Jordan 1 Retro High', color:'Chicago Lost & Found',sizes:'10.5|11|11.5',      price:'$380', qty:3, available:true, cat:'new', image:'' },
 ];
-// ╚═══════════════════════════════════════════════════════════════════╝
 
-// ── SVG placeholder shown when no image URL is provided
 const SHOE_SVG = `<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M16 112C50 50 112 38 152 40C192 42 228 66 258 80C278 90 300 94 308 90C316 87 316 104 304 108C272 118 32 130 16 112Z" stroke="#000" stroke-width="1.6" fill="none"/>
   <path d="M104 40L114 10C116 4 128 4 130 10L140 40" stroke="#000" stroke-width="1.6" fill="none"/>
@@ -299,34 +252,66 @@ const SHOE_SVG = `<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="h
 let allItems = [];
 let activeFilter = CATEGORIES[0]?.value || 'all';
 
-// ── STARTUP
 async function init() {
-  if (USE_SHEETS && SHEETS_CSV_URL !== 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1308401092&single=true&output=csv') {
+  // ── BUG FIX: was previously checking !== your URL, so always fell back to local.
+  // Now correctly checks USE_SHEETS = true and that a URL has been set.
+  if (USE_SHEETS && SHEETS_CSV_URL !== 'YOUR_GOOGLE_SHEETS_CSV_URL_HERE') {
     try {
-      const text = await (await fetch(SHEETS_CSV_URL)).text();
-      allItems = parseCSV(text);
+      const res  = await fetch(SHEETS_CSV_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      allItems   = parseCSV(text);
+      if (!allItems.length) throw new Error('Empty sheet');
     } catch(e) {
-      console.warn('Google Sheets fetch failed, using local inventory.', e);
+      console.warn('Google Sheets fetch failed, using fallback inventory.', e);
       allItems = INVENTORY;
     }
   } else {
     allItems = INVENTORY;
   }
-
   buildNav();
   filterBy(activeFilter, null);
 }
 
-// ── BUILD NAV from CATEGORIES array
+function parseCSV(csv) {
+  const lines = csv.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z]/g, ''));
+
+  return lines.slice(1).map(row => {
+    const cols = [];
+    let cur = '', inQ = false;
+    for (const c of row) {
+      if (c === '"') { inQ = !inQ; continue; }
+      if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; continue; }
+      cur += c;
+    }
+    cols.push(cur.trim());
+
+    const get = (key, fallback = '') => {
+      const idx = headers.indexOf(key);
+      return idx >= 0 && cols[idx] !== undefined ? cols[idx] : fallback;
+    };
+
+    const avail = get('available', 'true').toLowerCase();
+    return {
+      code:      get('code'),
+      name:      get('name'),
+      color:     get('color'),
+      sizes:     get('sizes'),
+      price:     get('price'),
+      qty:       parseInt(get('qty', '0')) || 0,
+      available: avail === 'true' || avail === '1' || avail === 'yes',
+      cat:       get('cat', 'new').toLowerCase().trim(),
+      image:     get('image'),
+    };
+  }).filter(i => i.code);
+}
+
 function buildNav() {
   const center = document.getElementById('navCenter');
   center.innerHTML = '';
-
-  // Split into two rows: first 3 in row 1, rest in row 2
-  const row1 = document.createElement('div');
-  row1.className = 'nav-row';
-  const row2 = document.createElement('div');
-  row2.className = 'nav-row';
+  const row1 = document.createElement('div'); row1.className = 'nav-row';
+  const row2 = document.createElement('div'); row2.className = 'nav-row';
 
   CATEGORIES.forEach((cat, i) => {
     const btn = document.createElement('button');
@@ -341,62 +326,20 @@ function buildNav() {
   if (row2.children.length) center.appendChild(row2);
 }
 
-// ── CSV PARSER — tolerant of extra/missing columns
-function parseCSV(csv) {
-  const lines = csv.trim().split('\n');
-  // Detect headers
-  const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z]/g,''));
-
-  return lines.slice(1).map(row => {
-    const cols = [];
-    let cur = '', inQ = false;
-    for (const c of row) {
-      if (c === '"') { inQ = !inQ; continue; }
-      if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; continue; }
-      cur += c;
-    }
-    cols.push(cur.trim());
-
-    // Map by header name so column order doesn't matter
-    const get = (key, fallback='') => {
-      const idx = headers.indexOf(key);
-      return idx >= 0 && cols[idx] !== undefined ? cols[idx] : fallback;
-    };
-
-    const available = get('available','true').toLowerCase();
-    return {
-      code:      get('code'),
-      name:      get('name'),
-      color:     get('color'),
-      sizes:     get('sizes'),
-      price:     get('price'),
-      qty:       parseInt(get('qty','0')) || 0,
-      available: available === 'true' || available === '1' || available === 'yes',
-      cat:       get('cat','new').toLowerCase().trim(),
-      image:     get('image'),
-    };
-  }).filter(i => i.code);
-}
-
-// ── FILTER + RENDER
 function filterBy(cat, el) {
   activeFilter = cat;
   document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
   if (el) {
     el.classList.add('active');
   } else {
-    // reactivate correct button when using + or programmatic call
     document.querySelectorAll('.nav-link').forEach(b => {
       if (b.dataset.value === cat) b.classList.add('active');
     });
   }
-
-  // Only show available items — sold out items are hidden completely
   const visible = allItems.filter(i => i.available && (cat === 'all' || i.cat === cat));
   renderGrid(visible);
 }
 
-// ── RENDER GRID
 function renderGrid(list) {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
@@ -407,7 +350,6 @@ function renderGrid(list) {
     return;
   }
 
-  // Auto-scale columns: match item count up to max 6
   const cols = Math.min(list.length, 6);
   grid.style.setProperty('--cols', cols);
 
@@ -415,9 +357,8 @@ function renderGrid(list) {
     const t = document.createElement('div');
     t.className = 'tile';
 
-    // Show real image if URL provided, otherwise SVG placeholder
     const imgHTML = item.image && item.image.trim()
-      ? `<img src="${item.image.trim()}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">${SHOE_SVG.replace('class="ph-svg"','class="ph-svg" style="display:none"')}`
+      ? `<img src="${item.image.trim()}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">${SHOE_SVG.replace('class="ph-svg"', 'class="ph-svg" style="display:none"')}`
       : SHOE_SVG;
 
     t.innerHTML = `
@@ -433,7 +374,6 @@ function renderGrid(list) {
   });
 }
 
-// ── MODAL
 function openModal(item) {
   document.getElementById('m-code').textContent  = item.code;
   document.getElementById('m-name').textContent  = item.name;
