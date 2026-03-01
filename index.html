@@ -229,7 +229,7 @@ const CATEGORIES = [
   { label: 'Pokemon',     value: 'pokemon'     },
   { label: 'Baseball',    value: 'baseball'    },
   { label: 'Football',    value: 'football'    },
-  { label: 'Basketball', value: 'basketball' },
+  { label: 'Accessories', value: 'accessories' },
 ];
 
 // ── ② GOOGLE SHEETS — set USE_SHEETS = true and paste your CSV URL
@@ -252,18 +252,35 @@ const SHOE_SVG = `<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="h
 let allItems = [];
 let activeFilter = CATEGORIES[0]?.value || 'all';
 
+async function fetchSheet() {
+  // Strategy 1: direct fetch
+  try {
+    const res = await fetch(SHEETS_CSV_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    if (text.trim().length > 0) return text;
+  } catch(e) { console.warn('Direct fetch failed, trying proxy...', e); }
+
+  // Strategy 2: CORS proxy fallback
+  try {
+    const proxy = 'https://corsproxy.io/?' + encodeURIComponent(SHEETS_CSV_URL);
+    const res = await fetch(proxy, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    if (text.trim().length > 0) return text;
+  } catch(e) { console.warn('Proxy fetch failed too.', e); }
+
+  return null;
+}
+
 async function init() {
-  // ── BUG FIX: was previously checking !== your URL, so always fell back to local.
-  // Now correctly checks USE_SHEETS = true and that a URL has been set.
   if (USE_SHEETS && SHEETS_CSV_URL !== 'YOUR_GOOGLE_SHEETS_CSV_URL_HERE') {
-    try {
-      const res  = await fetch(SHEETS_CSV_URL);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const text = await res.text();
-      allItems   = parseCSV(text);
-      if (!allItems.length) throw new Error('Empty sheet');
-    } catch(e) {
-      console.warn('Google Sheets fetch failed, using fallback inventory.', e);
+    const text = await fetchSheet();
+    if (text) {
+      const parsed = parseCSV(text);
+      allItems = parsed.length ? parsed : INVENTORY;
+    } else {
+      console.warn('All fetches failed, using fallback inventory.');
       allItems = INVENTORY;
     }
   } else {
