@@ -131,7 +131,7 @@ nav {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #000;
-  font-weight: bold;
+  font-weight: 900;
 }
 
 .tile-name {
@@ -140,13 +140,23 @@ nav {
   text-transform: uppercase;
   color: #000;
   line-height: 1.35;
+  font-weight: 900;
 }
 
-.tile-meta {
+.tile-qty {
   font-size: 18px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #000;
+  font-weight: 900;
+}
+
+.tile-price {
+  font-size: 18px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #000;
+  font-weight: 900;
 }
 
 /* ── FOOTER ── */
@@ -168,7 +178,7 @@ footer a:hover { color: #000; }
   .grid { grid-template-columns: repeat(min(var(--cols,6), 3), 1fr) !important; }
   .tile { padding: 12px 8px 24px; }
   .tile-name { font-size: 17px; }
-  .tile-meta { font-size: 15px; }
+  .tile-qty, .tile-price { font-size: 15px; }
   .tile-code { font-size: 17px; }
   .nav-link { font-size: 15px; }
 }
@@ -177,7 +187,7 @@ footer a:hover { color: #000; }
   .tile { padding: 10px 6px 20px; }
   .tile-info { text-align: center; align-items: center; }
   .tile-name { font-size: 14px; letter-spacing: 0.02em; }
-  .tile-meta { font-size: 13px; }
+  .tile-qty, .tile-price { font-size: 13px; }
   .tile-code { font-size: 14px; }
   nav { padding: 10px 14px 8px; }
   .nav-link { font-size: 13px; letter-spacing: 0.05em; }
@@ -310,7 +320,8 @@ function renderGrid(list) {
       <div class="tile-info">
         ${codeHTML}
         <div class="tile-name">${item.name}</div>
-        <div class="tile-meta">Qty ${item.qty} · ${item.price}</div>
+        <div class="tile-qty">Qty ${item.qty}</div>
+        <div class="tile-price">${item.price}</div>
       </div>`;
 
     grid.appendChild(t);
