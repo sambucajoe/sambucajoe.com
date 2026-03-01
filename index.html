@@ -232,14 +232,22 @@ const CATEGORIES = [
   { label: 'Accessories', value: 'accessories' },
 ];
 
-// ── ② GOOGLE SHEETS — set USE_SHEETS = true and paste your CSV URL
-const USE_SHEETS     = true;
-const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTgSp9bGKYfZqXD1KPNGiMNCG7IdyOpKi7VEdAinqaRyrZlx5xmdRacLTYp09nGdMihHgtrwNHDTguT/pub?gid=1308401092&single=true&output=csv';
+// ── ② GOOGLE SHEETS — disabled, using direct inventory below
+const USE_SHEETS     = false;
+const SHEETS_CSV_URL = '';
 
-// ── ③ FALLBACK INVENTORY — only used if Google Sheets fetch fails
+// ── ③ INVENTORY — edit this directly to update your site.
+// To add a product: copy any line, paste it, and update the values.
+// To remove: delete the line.
+// To mark sold out: set available:false (item disappears from site).
+// image: paste a DIRECT imgur link ending in .jpg or .png
+//        e.g. https://i.imgur.com/abc123.jpg
+//        (not an album link like imgur.com/a/...)
+//        To get direct link: open imgur image → right-click → Copy Image Address
 const INVENTORY = [
-  { code:'SN-01', name:'Yeezy Boost 350 V2',     color:'Beluga Reflective',   sizes:'8|8.5|9|9.5|10|11', price:'$420', qty:4, available:true, cat:'new', image:'' },
-  { code:'SN-02', name:'Air Jordan 1 Retro High', color:'Chicago Lost & Found',sizes:'10.5|11|11.5',      price:'$380', qty:3, available:true, cat:'new', image:'' },
+  { code:'PK-01', name:'Ascended Heroes ETB',                          color:'', sizes:'', price:'$100', qty:75, available:true, cat:'new', image:'' },
+  { code:'PK-02', name:'Ascended Heroes 2Pk Blister 12Ct',             color:'', sizes:'', price:'$100', qty:75, available:true, cat:'new', image:'' },
+  { code:'PK-03', name:'Ascended Heroes First Partners Deluxe Pin Collection', color:'', sizes:'', price:'$100', qty:75, available:true, cat:'new', image:'' },
 ];
 
 const SHOE_SVG = `<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg">
