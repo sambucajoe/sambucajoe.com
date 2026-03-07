@@ -211,7 +211,7 @@ footer a:hover { color: #000; }
 
 <footer>
   <span class="ft">Sambuca Joe © 2026</span>
-  <span class="ft"><a href="/cdn-cgi/l/email-protection#b6c4d3d7dac5d7dbd4c3d5d7dcd9d3f6d1dbd7dfda98d5d9db">Contact</a> · All Sales Final</span>
+  <span class="ft"><a href="/cdn-cgi/l/email-protection#3a485f5b56495b57584f595b50555f7a5d575b535614595557">Contact</a> · All Sales Final</span>
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -228,14 +228,8 @@ const CATEGORIES = [
   { label: 'Other', value: 'other' },
 ];
 
-// ── ② INVENTORY SOURCE
-// Edit inventory.csv in GitHub to update your site — no HTML changes needed.
-// Columns: code, name, color, sizes, price, qty, available, cat, image
-// To show in multiple categories: duplicate the row with a different cat value
-// available: TRUE = show, FALSE = hide
-const INVENTORY_CSV = 'inventory.csv';
-
-// ── FALLBACK — only shown if CSV fails to load
+// ── ② INVENTORY — edit inventory.csv on GitHub to update your site.
+// No need to touch this file. Just edit the CSV and commit.
 const INVENTORY_FALLBACK = [
   { code:'', name:'Ascended Heroes ETB', color:'', sizes:'', price:'$100', qty:75, available:true, cat:'new', image:'https://i.imgur.com/sxciDCx.png' },
 ];
@@ -253,13 +247,13 @@ let activeFilter = CATEGORIES[0]?.value || 'all';
 
 async function init() {
   try {
-    const res = await fetch(INVENTORY_CSV + '?v=' + Date.now());
-    if (!res.ok) throw new Error('CSV not found');
+    const res = await fetch('inventory.csv');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
     const parsed = parseCSV(text);
     allItems = parsed.length ? parsed.filter(i => i.available) : INVENTORY_FALLBACK.filter(i => i.available);
   } catch(e) {
-    console.warn('Could not load inventory.csv, using fallback.', e);
+    console.warn('CSV load failed, using fallback:', e);
     allItems = INVENTORY_FALLBACK.filter(i => i.available);
   }
   buildNav();
