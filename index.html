@@ -9,191 +9,54 @@
   font-family: 'VCR';
   src: url('https://cdn.jsdelivr.net/gh/webfontkit/vcr-osd-mono@1.0.0/VCR_OSD_MONO_1.001.ttf') format('truetype');
 }
-
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root { --f: 'VCR', 'Courier New', monospace; }
+html, body { background: #fff; color: #000; font-family: var(--f); -webkit-font-smoothing: antialiased; min-height: 100vh; }
 
-html, body {
-  background: #fff;
-  color: #000;
-  font-family: var(--f);
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-}
-
-/* ── NAV ── */
 nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #fff;
-  display: grid;
-  grid-template-columns: 40px 1fr 40px;
-  align-items: center;
-  padding: 14px 24px 10px;
+  position: sticky; top: 0; z-index: 100; background: #fff;
+  display: grid; grid-template-columns: 40px 1fr 40px;
+  align-items: center; padding: 14px 24px 10px;
 }
-
-.nav-plus {
-  font-size: 28px;
-  font-weight: 300;
-  color: #000;
-  cursor: pointer;
-  background: none;
-  border: none;
-  line-height: 1;
-  font-family: sans-serif;
-  justify-self: start;
-}
-
-.nav-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
+.nav-plus { font-size: 28px; font-weight: 300; color: #000; cursor: pointer; background: none; border: none; line-height: 1; font-family: sans-serif; justify-self: start; }
+.nav-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .nav-row { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
-
-.nav-link {
-  font-family: var(--f);
-  font-size: 18px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #bbb;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  transition: color 0.15s;
-}
-.nav-link:hover { color: #000; }
-.nav-link.active { color: #000; }
-
-.nav-cart {
-  justify-self: end;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
+.nav-link { font-family: var(--f); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: #bbb; cursor: pointer; background: none; border: none; padding: 0; transition: color 0.15s; }
+.nav-link:hover, .nav-link.active { color: #000; }
+.nav-cart { justify-self: end; background: none; border: none; cursor: pointer; padding: 0; }
 .nav-cart svg { width: 18px; height: 18px; stroke: #000; fill: none; stroke-width: 1.2; }
 
-/* ── GRID ── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(var(--cols, 6), 1fr);
-  padding: 16px 16px 100px;
-}
-
-.tile {
-  padding: 20px 12px 28px;
-  text-align: center;
-  cursor: default;
-}
-
-.tile-img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
-  overflow: hidden;
-}
-
-.tile-img img {
-  max-width: 90%;
-  max-height: 90%;
-  object-fit: contain;
-  display: block;
-  transition: transform 0.5s cubic-bezier(.22,.68,0,1.2);
-}
+.grid { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); padding: 16px 16px 100px; }
+.tile { padding: 20px 12px 28px; text-align: center; cursor: default; }
+.tile-img { width: 100%; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; overflow: hidden; }
+.tile-img img { max-width: 90%; max-height: 90%; object-fit: contain; display: block; transition: transform 0.5s cubic-bezier(.22,.68,0,1.2); }
 .tile:hover .tile-img img { transform: scale(1.04); }
+.ph-svg { width: 75%; opacity: 0.1; }
 
-.ph-svg {
-  width: 75%;
-  opacity: 0.1;
-}
+.tile-info { display: flex; flex-direction: column; align-items: center; gap: 5px; padding-top: 6px; text-align: center; width: 100%; }
+.tile-code  { font-size: 22px; letter-spacing: 0.05em; text-transform: uppercase; color: #000; font-weight: 900; }
+.tile-name  { font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase; color: #000; line-height: 1.35; font-weight: 900; }
+.tile-qty   { font-size: 18px; letter-spacing: 0.03em; text-transform: uppercase; color: #000; font-weight: 900; }
+.tile-price { font-size: 18px; letter-spacing: 0.03em; text-transform: uppercase; color: #000; font-weight: 900; }
 
-/* ── TILE LABELS ── */
-.tile-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  padding-top: 6px;
-  text-align: center;
-  width: 100%;
-}
-
-.tile-code {
-  font-size: 22px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #000;
-  font-weight: 900;
-}
-
-.tile-name {
-  font-size: 20px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: #000;
-  line-height: 1.35;
-  font-weight: 900;
-}
-
-.tile-qty {
-  font-size: 18px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: #000;
-  font-weight: 900;
-}
-
-.tile-price {
-  font-size: 18px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: #000;
-  font-weight: 900;
-}
-
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid #e8e8e8;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-}
+footer { border-top: 1px solid #e8e8e8; padding: 16px 24px; display: flex; justify-content: space-between; }
 .ft { font-size: 16px; letter-spacing: 0.1em; text-transform: uppercase; color: #bbb; }
 footer a { color: #bbb; text-decoration: none; }
 footer a:hover { color: #000; }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  .grid { grid-template-columns: repeat(min(var(--cols,6), 4), 1fr) !important; }
-}
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(min(var(--cols,3), 4), 1fr) !important; } }
 @media (max-width: 640px) {
-  .grid { grid-template-columns: repeat(min(var(--cols,6), 3), 1fr) !important; }
+  .grid { grid-template-columns: repeat(3, 1fr) !important; }
   .tile { padding: 12px 8px 24px; }
-  .tile-name { font-size: 17px; }
-  .tile-qty, .tile-price { font-size: 15px; }
-  .tile-code { font-size: 17px; }
+  .tile-name { font-size: 17px; } .tile-qty, .tile-price { font-size: 15px; } .tile-code { font-size: 17px; }
   .nav-link { font-size: 15px; }
 }
 @media (max-width: 420px) {
   .grid { grid-template-columns: repeat(2, 1fr) !important; }
   .tile { padding: 10px 6px 20px; }
-  .tile-info { text-align: center; align-items: center; }
-  .tile-name { font-size: 14px; letter-spacing: 0.02em; }
-  .tile-qty, .tile-price { font-size: 13px; }
-  .tile-code { font-size: 14px; }
-  nav { padding: 10px 14px 8px; }
-  .nav-link { font-size: 13px; letter-spacing: 0.05em; }
-  .nav-row { gap: 14px; }
-  footer { flex-direction: column; align-items: center; gap: 4px; text-align: center; }
-  .ft { font-size: 13px; }
+  .tile-name { font-size: 14px; letter-spacing: 0.02em; } .tile-qty, .tile-price { font-size: 13px; } .tile-code { font-size: 14px; }
+  .nav-link { font-size: 13px; letter-spacing: 0.05em; } .nav-row { gap: 14px; }
+  footer { flex-direction: column; align-items: center; gap: 4px; text-align: center; } .ft { font-size: 13px; }
 }
 </style>
 </head>
@@ -210,78 +73,53 @@ footer a:hover { color: #000; }
 <main><div class="grid" id="grid"></div></main>
 
 <footer>
-  <span class="ft">Sambuca Joe © 2026</span>
-  <span class="ft"><a href="/cdn-cgi/l/email-protection#3a485f5b56495b57584f595b50555f7a5d575b535614595557">Contact</a> · All Sales Final</span>
+  <span class="ft">Sambuca Joe &copy; 2026</span>
+  <span class="ft"><a href="mailto:realsambucajoe@gmail.com">Contact</a> &middot; All Sales Final</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ── ① CATEGORIES
-// Edit this list to change nav categories.
-// label = what shows in nav
-// value = what you put in the "cat" column of your inventory
+<script>
 const CATEGORIES = [
-  { label: 'New',         value: 'new'         },
-  { label: 'Pokemon',     value: 'pokemon'     },
-  { label: 'Baseball',    value: 'baseball'    },
-  { label: 'Football',    value: 'football'    },
+  { label: 'New',        value: 'new'        },
+  { label: 'Pokemon',    value: 'pokemon'    },
+  { label: 'Baseball',   value: 'baseball'   },
+  { label: 'Football',   value: 'football'   },
   { label: 'Basketball', value: 'basketball' },
-  { label: 'Other', value: 'other' },
+  { label: 'Other',      value: 'other'      },
 ];
 
-// ── ② INVENTORY — edit inventory.csv on GitHub to update your site.
-// No need to touch this file. Just edit the CSV and commit.
-const INVENTORY_FALLBACK = [
+const FALLBACK = [
   { code:'', name:'Ascended Heroes ETB', color:'', sizes:'', price:'$100', qty:75, available:true, cat:'new', image:'https://i.imgur.com/sxciDCx.png' },
+  { code:'', name:'Ascended Heroes 2Pk Blister 12Ct', color:'', sizes:'', price:'$250', qty:35, available:true, cat:'new', image:'https://i.imgur.com/BUK5g1T.png' },
+  { code:'', name:'Ascended Heroes First Partners Deluxe Pin Collection', color:'', sizes:'', price:'$45', qty:170, available:true, cat:'new', image:'https://i.imgur.com/M4VDdA2.png' },
 ];
 
-// ── SVG placeholder shown when no image is provided
-const SHOE_SVG = `<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M16 112C50 50 112 38 152 40C192 42 228 66 258 80C278 90 300 94 308 90C316 87 316 104 304 108C272 118 32 130 16 112Z" stroke="#000" stroke-width="1.6" fill="none"/>
-  <path d="M104 40L114 10C116 4 128 4 130 10L140 40" stroke="#000" stroke-width="1.6" fill="none"/>
-  <path d="M140 40C156 36 178 38 200 48" stroke="#000" stroke-width="1.6" fill="none"/>
-  <line x1="68" y1="92" x2="262" y2="92" stroke="#000" stroke-width="0.9" opacity="0.18"/>
-</svg>`;
+const SHOE_SVG = '<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 112C50 50 112 38 152 40C192 42 228 66 258 80C278 90 300 94 308 90C316 87 316 104 304 108C272 118 32 130 16 112Z" stroke="#000" stroke-width="1.6" fill="none"/><path d="M104 40L114 10C116 4 128 4 130 10L140 40" stroke="#000" stroke-width="1.6" fill="none"/><path d="M140 40C156 36 178 38 200 48" stroke="#000" stroke-width="1.6" fill="none"/><line x1="68" y1="92" x2="262" y2="92" stroke="#000" stroke-width="0.9" opacity="0.18"/></svg>';
 
 let allItems = [];
-let activeFilter = CATEGORIES[0]?.value || 'all';
-
-async function init() {
-  try {
-    const res = await fetch('inventory.csv');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    const parsed = parseCSV(text);
-    allItems = parsed.length ? parsed.filter(i => i.available) : INVENTORY_FALLBACK.filter(i => i.available);
-  } catch(e) {
-    console.warn('CSV load failed, using fallback:', e);
-    allItems = INVENTORY_FALLBACK.filter(i => i.available);
-  }
-  buildNav();
-  filterBy(activeFilter, null);
-}
+let activeFilter = CATEGORIES[0].value;
 
 function parseCSV(csv) {
-  const lines = csv.trim().split('\n').filter(l => l.trim());
+  var lines = csv.trim().split('\n').filter(function(l) { return l.trim(); });
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z]/g, ''));
-
-  return lines.slice(1).map(row => {
-    const cols = [];
-    let cur = '', inQ = false;
-    for (const ch of row) {
-      if (ch === '"') { inQ = !inQ; continue; }
-      if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; continue; }
-      cur += ch;
+  var headers = lines[0].split(',').map(function(h) { return h.trim().toLowerCase().replace(/[^a-z]/g, ''); });
+  var results = [];
+  for (var i = 1; i < lines.length; i++) {
+    var cols = [];
+    var cur = '';
+    var inQ = false;
+    for (var j = 0; j < lines[i].length; j++) {
+      var ch = lines[i][j];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += ch; }
     }
     cols.push(cur.trim());
-
-    const get = (key, fallback = '') => {
-      const idx = headers.indexOf(key);
-      return idx >= 0 && cols[idx] !== undefined ? cols[idx] : fallback;
+    var get = function(key, fb) {
+      var idx = headers.indexOf(key);
+      return (idx >= 0 && cols[idx] !== undefined && cols[idx] !== '') ? cols[idx] : (fb || '');
     };
-
-    const avail = get('available', 'true').toLowerCase();
-    return {
+    var avail = get('available', 'true').toLowerCase();
+    var item = {
       code:      get('code'),
       name:      get('name'),
       color:     get('color'),
@@ -292,69 +130,87 @@ function parseCSV(csv) {
       cat:       get('cat', 'new').toLowerCase().trim(),
       image:     get('image'),
     };
-  }).filter(i => i.name);
+    if (item.name) results.push(item);
+  }
+  return results;
 }
 
 function buildNav() {
-  const center = document.getElementById('navCenter');
+  var center = document.getElementById('navCenter');
   center.innerHTML = '';
-  const row1 = document.createElement('div'); row1.className = 'nav-row';
-  const row2 = document.createElement('div'); row2.className = 'nav-row';
-
-  CATEGORIES.forEach((cat, i) => {
-    const btn = document.createElement('button');
+  var row1 = document.createElement('div'); row1.className = 'nav-row';
+  var row2 = document.createElement('div'); row2.className = 'nav-row';
+  CATEGORIES.forEach(function(cat, i) {
+    var btn = document.createElement('button');
     btn.className = 'nav-link' + (cat.value === activeFilter ? ' active' : '');
     btn.textContent = cat.label;
     btn.dataset.value = cat.value;
-    btn.onclick = () => filterBy(cat.value, btn);
+    btn.onclick = function() { filterBy(cat.value, btn); };
     (i < 3 ? row1 : row2).appendChild(btn);
   });
-
   if (row1.children.length) center.appendChild(row1);
   if (row2.children.length) center.appendChild(row2);
 }
 
 function filterBy(cat, el) {
   activeFilter = cat;
-  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-  if (el) {
-    el.classList.add('active');
-  } else {
-    document.querySelectorAll('.nav-link').forEach(b => {
-      if (b.dataset.value === cat) b.classList.add('active');
-    });
-  }
-  const visible = allItems.filter(i => cat === 'all' || i.cat === cat);
+  document.querySelectorAll('.nav-link').forEach(function(b) { b.classList.remove('active'); });
+  if (el) { el.classList.add('active'); }
+  else { document.querySelectorAll('.nav-link').forEach(function(b) { if (b.dataset.value === cat) b.classList.add('active'); }); }
+  var visible = allItems.filter(function(i) { return cat === 'all' || i.cat === cat; });
   renderGrid(visible);
 }
 
 function renderGrid(list) {
-  const grid = document.getElementById('grid');
+  var grid = document.getElementById('grid');
   grid.innerHTML = '';
-
   if (!list.length) {
     grid.innerHTML = '<div style="grid-column:1/-1;padding:80px;text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ccc">No Items</div>';
     grid.style.setProperty('--cols', 1);
     return;
   }
-
-  const cols = Math.min(list.length, 6);
+  var cols = Math.min(list.length, 6);
   grid.style.setProperty('--cols', cols);
-
-  list.forEach(item => {
-    const t = document.createElement('div');
+  list.forEach(function(item) {
+    var t = document.createElement('div');
     t.className = 'tile';
-
-    const imgHTML = item.image && item.image.trim()
-      ? `<img src="${item.image.trim()}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">${SHOE_SVG.replace('class="ph-svg"', 'class="ph-svg" style="display:none"')}`
+    var imgHTML = (item.image && item.image.trim())
+      ? '<img src="' + item.image.trim() + '" alt="' + item.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' + SHOE_SVG.replace('class="ph-svg"', 'class="ph-svg" style="display:none"')
       : SHOE_SVG;
+    var codeHTML = item.code ? '<div class="tile-code">' + item.code + '</div>' : '';
+    t.innerHTML = '<div class="tile-img">' + imgHTML + '</div>'
+      + '<div class="tile-info">'
+      + codeHTML
+      + '<div class="tile-name">' + item.name + '</div>'
+      + '<div class="tile-qty">Qty ' + item.qty + '</div>'
+      + '<div class="tile-price">' + item.price + '</div>'
+      + '</div>';
+    grid.appendChild(t);
+  });
+}
 
-    // code line only shown if code is not empty
-    const codeHTML = item.code ? `<div class="tile-code">${item.code}</div>` : '';
+function init() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'inventory.csv', true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var parsed = parseCSV(xhr.responseText);
+      allItems = parsed.length ? parsed.filter(function(i) { return i.available; }) : FALLBACK.filter(function(i) { return i.available; });
+    } else {
+      allItems = FALLBACK.filter(function(i) { return i.available; });
+    }
+    buildNav();
+    filterBy(activeFilter, null);
+  };
+  xhr.onerror = function() {
+    allItems = FALLBACK.filter(function(i) { return i.available; });
+    buildNav();
+    filterBy(activeFilter, null);
+  };
+  xhr.send();
+}
 
-    t.innerHTML = `
-      <div class="tile-img">${imgHTML}</div>
-      <div class="tile-info">
-        ${codeHTML}
-        <div class="tile-name">${item.name}</div>
-        <div class="tile-qty">Qty
+init();
+</script>
+</body>
+</html>
