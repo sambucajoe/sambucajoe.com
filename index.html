@@ -13,11 +13,7 @@
 :root { --f: 'VCR', 'Courier New', monospace; }
 html, body { background: #fff; color: #000; font-family: var(--f); -webkit-font-smoothing: antialiased; min-height: 100vh; }
 
-nav {
-  position: sticky; top: 0; z-index: 100; background: #fff;
-  display: grid; grid-template-columns: 40px 1fr 40px;
-  align-items: center; padding: 14px 24px 10px;
-}
+nav { position: sticky; top: 0; z-index: 100; background: #fff; display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; padding: 14px 24px 10px; }
 .nav-plus { font-size: 28px; font-weight: 300; color: #000; cursor: pointer; background: none; border: none; line-height: 1; font-family: sans-serif; justify-self: start; }
 .nav-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .nav-row { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
@@ -32,7 +28,6 @@ nav {
 .tile-img img { max-width: 90%; max-height: 90%; object-fit: contain; display: block; transition: transform 0.5s cubic-bezier(.22,.68,0,1.2); }
 .tile:hover .tile-img img { transform: scale(1.04); }
 .ph-svg { width: 75%; opacity: 0.1; }
-
 .tile-info { display: flex; flex-direction: column; align-items: center; gap: 5px; padding-top: 6px; text-align: center; width: 100%; }
 .tile-code  { font-size: 22px; letter-spacing: 0.05em; text-transform: uppercase; color: #000; font-weight: 900; }
 .tile-name  { font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase; color: #000; line-height: 1.35; font-weight: 900; }
@@ -44,18 +39,17 @@ footer { border-top: 1px solid #e8e8e8; padding: 16px 24px; display: flex; justi
 footer a { color: #bbb; text-decoration: none; }
 footer a:hover { color: #000; }
 
-@media (max-width: 900px) { .grid { grid-template-columns: repeat(min(var(--cols,3), 4), 1fr) !important; } }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(4, 1fr) !important; } }
 @media (max-width: 640px) {
   .grid { grid-template-columns: repeat(3, 1fr) !important; }
   .tile { padding: 12px 8px 24px; }
-  .tile-name { font-size: 17px; } .tile-qty, .tile-price { font-size: 15px; } .tile-code { font-size: 17px; }
-  .nav-link { font-size: 15px; }
+  .tile-name { font-size: 17px; } .tile-qty, .tile-price { font-size: 15px; } .tile-code { font-size: 17px; } .nav-link { font-size: 15px; }
 }
 @media (max-width: 420px) {
   .grid { grid-template-columns: repeat(2, 1fr) !important; }
   .tile { padding: 10px 6px 20px; }
-  .tile-name { font-size: 14px; letter-spacing: 0.02em; } .tile-qty, .tile-price { font-size: 13px; } .tile-code { font-size: 14px; }
-  .nav-link { font-size: 13px; letter-spacing: 0.05em; } .nav-row { gap: 14px; }
+  .tile-name { font-size: 14px; } .tile-qty, .tile-price { font-size: 13px; } .tile-code { font-size: 14px; }
+  .nav-link { font-size: 13px; } .nav-row { gap: 14px; }
   footer { flex-direction: column; align-items: center; gap: 4px; text-align: center; } .ft { font-size: 13px; }
 }
 </style>
@@ -63,7 +57,7 @@ footer a:hover { color: #000; }
 <body>
 
 <nav>
-  <button class="nav-plus" title="Show all" onclick="filterBy('all', null)">+</button>
+  <button class="nav-plus" title="Show all" onclick="filterBy('all',null)">+</button>
   <div class="nav-center" id="navCenter"></div>
   <button class="nav-cart" onclick="alert('DM @sambucajoe on Instagram to purchase')">
     <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -78,7 +72,10 @@ footer a:hover { color: #000; }
 </footer>
 
 <script>
-const CATEGORIES = [
+// =====================================================
+//  CATEGORIES — edit to add/remove nav tabs
+// =====================================================
+var CATEGORIES = [
   { label: 'New',        value: 'new'        },
   { label: 'Pokemon',    value: 'pokemon'    },
   { label: 'Baseball',   value: 'baseball'   },
@@ -87,77 +84,64 @@ const CATEGORIES = [
   { label: 'Other',      value: 'other'      },
 ];
 
-const FALLBACK = [
-  { code:'', name:'Ascended Heroes ETB', color:'', sizes:'', price:'$100', qty:75, available:true, cat:'new', image:'https://i.imgur.com/sxciDCx.png' },
-  { code:'', name:'Ascended Heroes 2Pk Blister 12Ct', color:'', sizes:'', price:'$250', qty:35, available:true, cat:'new', image:'https://i.imgur.com/BUK5g1T.png' },
-  { code:'', name:'Ascended Heroes First Partners Deluxe Pin Collection', color:'', sizes:'', price:'$45', qty:170, available:true, cat:'new', image:'https://i.imgur.com/M4VDdA2.png' },
+// =====================================================
+//  INVENTORY — edit this list to update your store
+//  To hide an item: change available to false
+//  To show in multiple tabs: duplicate with different cat
+// =====================================================
+var INVENTORY = [
+  { code:'', name:'Ascended Heroes ETB',                                   price:'$100', qty:75,  available:true, cat:'new',        image:'https://i.imgur.com/sxciDCx.png' },
+  { code:'', name:'Ascended Heroes 2Pk Blister 12Ct',                      price:'$250', qty:35,  available:true, cat:'new',        image:'https://i.imgur.com/BUK5g1T.png' },
+  { code:'', name:'Ascended Heroes First Partners Deluxe Pin Collection',   price:'$45',  qty:170, available:true, cat:'new',        image:'https://i.imgur.com/M4VDdA2.png' },
+  { code:'', name:'Ascended Heroes Mini Tin Display 10ct',                  price:'$225', qty:5,   available:true, cat:'new',        image:'https://i.imgur.com/yAyJ91X.jpeg' },
+  { code:'', name:'Phantasmal Flames ETB',                                  price:'$80',  qty:96,  available:true, cat:'new',        image:'https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/incrementals/2025/me02-elite-trainer-box/me02-elite-trainer-box-169-en.png' },
+  { code:'', name:'2025 Panini PRIZM DSG Exclusive WNBA Blaster Box Sealed Case', price:'$1350', qty:2, available:true, cat:'new',   image:'https://dks.scene7.com/is/image/GolfGalaxy/25PAAUWNB25PRZMDSXFL' },
+  { code:'', name:'2025 Panini Donruss Optic NFL Blaster',                  price:'$45',  qty:25,  available:true, cat:'new',        image:'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/dcc00e32-7d22-4521-b10a-87c96f512e7f.png' },
+
+  { code:'', name:'Ascended Heroes ETB',                                   price:'$100', qty:75,  available:true, cat:'pokemon',    image:'https://i.imgur.com/sxciDCx.png' },
+  { code:'', name:'Ascended Heroes 2Pk Blister 12Ct',                      price:'$250', qty:35,  available:true, cat:'pokemon',    image:'https://i.imgur.com/BUK5g1T.png' },
+  { code:'', name:'Ascended Heroes First Partners Deluxe Pin Collection',   price:'$45',  qty:170, available:true, cat:'pokemon',    image:'https://i.imgur.com/M4VDdA2.png' },
+  { code:'', name:'Ascended Heroes Mini Tin Display 10ct',                  price:'$225', qty:5,   available:true, cat:'pokemon',    image:'https://i.imgur.com/yAyJ91X.jpeg' },
+  { code:'', name:'Phantasmal Flames ETB',                                  price:'$80',  qty:96,  available:true, cat:'pokemon',    image:'https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/incrementals/2025/me02-elite-trainer-box/me02-elite-trainer-box-169-en.png' },
+
+  { code:'', name:'2025 Panini PRIZM DSG Exclusive WNBA Blaster Box Sealed Case', price:'$1350', qty:2, available:true, cat:'basketball', image:'https://dks.scene7.com/is/image/GolfGalaxy/25PAAUWNB25PRZMDSXFL' },
+
+  { code:'', name:'2025 Panini Donruss Optic NFL Blaster',                  price:'$45',  qty:25,  available:true, cat:'football',   image:'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/dcc00e32-7d22-4521-b10a-87c96f512e7f.png' },
 ];
 
-const SHOE_SVG = '<svg class="ph-svg" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 112C50 50 112 38 152 40C192 42 228 66 258 80C278 90 300 94 308 90C316 87 316 104 304 108C272 118 32 130 16 112Z" stroke="#000" stroke-width="1.6" fill="none"/><path d="M104 40L114 10C116 4 128 4 130 10L140 40" stroke="#000" stroke-width="1.6" fill="none"/><path d="M140 40C156 36 178 38 200 48" stroke="#000" stroke-width="1.6" fill="none"/><line x1="68" y1="92" x2="262" y2="92" stroke="#000" stroke-width="0.9" opacity="0.18"/></svg>';
+// =====================================================
+var SHOE_SVG = '<svg class="ph-svg" viewBox="0 0 320 160" fill="none"><path d="M16 112C50 50 112 38 152 40C192 42 228 66 258 80C278 90 300 94 308 90C316 87 316 104 304 108C272 118 32 130 16 112Z" stroke="#000" stroke-width="1.6"/><path d="M104 40L114 10C116 4 128 4 130 10L140 40" stroke="#000" stroke-width="1.6"/><path d="M140 40C156 36 178 38 200 48" stroke="#000" stroke-width="1.6"/><line x1="68" y1="92" x2="262" y2="92" stroke="#000" stroke-width="0.9" opacity="0.18"/></svg>';
 
-let allItems = [];
-let activeFilter = CATEGORIES[0].value;
-
-function parseCSV(csv) {
-  var lines = csv.trim().split('\n').filter(function(l) { return l.trim(); });
-  if (lines.length < 2) return [];
-  var headers = lines[0].split(',').map(function(h) { return h.trim().toLowerCase().replace(/[^a-z]/g, ''); });
-  var results = [];
-  for (var i = 1; i < lines.length; i++) {
-    var cols = [];
-    var cur = '';
-    var inQ = false;
-    for (var j = 0; j < lines[i].length; j++) {
-      var ch = lines[i][j];
-      if (ch === '"') { inQ = !inQ; }
-      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
-      else { cur += ch; }
-    }
-    cols.push(cur.trim());
-    var get = function(key, fb) {
-      var idx = headers.indexOf(key);
-      return (idx >= 0 && cols[idx] !== undefined && cols[idx] !== '') ? cols[idx] : (fb || '');
-    };
-    var avail = get('available', 'true').toLowerCase();
-    var item = {
-      code:      get('code'),
-      name:      get('name'),
-      color:     get('color'),
-      sizes:     get('sizes'),
-      price:     get('price'),
-      qty:       parseInt(get('qty', '0')) || 0,
-      available: avail === 'true' || avail === '1' || avail === 'yes',
-      cat:       get('cat', 'new').toLowerCase().trim(),
-      image:     get('image'),
-    };
-    if (item.name) results.push(item);
-  }
-  return results;
-}
+var activeFilter = CATEGORIES[0].value;
 
 function buildNav() {
   var center = document.getElementById('navCenter');
-  center.innerHTML = '';
   var row1 = document.createElement('div'); row1.className = 'nav-row';
   var row2 = document.createElement('div'); row2.className = 'nav-row';
-  CATEGORIES.forEach(function(cat, i) {
+  for (var i = 0; i < CATEGORIES.length; i++) {
+    var cat = CATEGORIES[i];
     var btn = document.createElement('button');
     btn.className = 'nav-link' + (cat.value === activeFilter ? ' active' : '');
     btn.textContent = cat.label;
     btn.dataset.value = cat.value;
-    btn.onclick = function() { filterBy(cat.value, btn); };
+    (function(c, b) { b.onclick = function() { filterBy(c.value, b); }; })(cat, btn);
     (i < 3 ? row1 : row2).appendChild(btn);
-  });
+  }
   if (row1.children.length) center.appendChild(row1);
   if (row2.children.length) center.appendChild(row2);
 }
 
 function filterBy(cat, el) {
   activeFilter = cat;
-  document.querySelectorAll('.nav-link').forEach(function(b) { b.classList.remove('active'); });
-  if (el) { el.classList.add('active'); }
-  else { document.querySelectorAll('.nav-link').forEach(function(b) { if (b.dataset.value === cat) b.classList.add('active'); }); }
-  var visible = allItems.filter(function(i) { return cat === 'all' || i.cat === cat; });
+  var links = document.querySelectorAll('.nav-link');
+  for (var i = 0; i < links.length; i++) {
+    links[i].classList.remove('active');
+    if (links[i].dataset.value === cat) links[i].classList.add('active');
+  }
+  var visible = [];
+  for (var j = 0; j < INVENTORY.length; j++) {
+    if (INVENTORY[j].available && (cat === 'all' || INVENTORY[j].cat === cat)) visible.push(INVENTORY[j]);
+  }
   renderGrid(visible);
 }
 
@@ -169,48 +153,27 @@ function renderGrid(list) {
     grid.style.setProperty('--cols', 1);
     return;
   }
-  var cols = Math.min(list.length, 6);
-  grid.style.setProperty('--cols', cols);
-  list.forEach(function(item) {
+  grid.style.setProperty('--cols', Math.min(list.length, 6));
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
     var t = document.createElement('div');
     t.className = 'tile';
     var imgHTML = (item.image && item.image.trim())
-      ? '<img src="' + item.image.trim() + '" alt="' + item.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' + SHOE_SVG.replace('class="ph-svg"', 'class="ph-svg" style="display:none"')
+      ? '<img src="' + item.image + '" alt="' + item.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' + SHOE_SVG.replace('class="ph-svg"', 'class="ph-svg" style="display:none"')
       : SHOE_SVG;
     var codeHTML = item.code ? '<div class="tile-code">' + item.code + '</div>' : '';
     t.innerHTML = '<div class="tile-img">' + imgHTML + '</div>'
-      + '<div class="tile-info">'
-      + codeHTML
+      + '<div class="tile-info">' + codeHTML
       + '<div class="tile-name">' + item.name + '</div>'
       + '<div class="tile-qty">Qty ' + item.qty + '</div>'
       + '<div class="tile-price">' + item.price + '</div>'
       + '</div>';
     grid.appendChild(t);
-  });
+  }
 }
 
-function init() {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'inventory.csv', true);
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      var parsed = parseCSV(xhr.responseText);
-      allItems = parsed.length ? parsed.filter(function(i) { return i.available; }) : FALLBACK.filter(function(i) { return i.available; });
-    } else {
-      allItems = FALLBACK.filter(function(i) { return i.available; });
-    }
-    buildNav();
-    filterBy(activeFilter, null);
-  };
-  xhr.onerror = function() {
-    allItems = FALLBACK.filter(function(i) { return i.available; });
-    buildNav();
-    filterBy(activeFilter, null);
-  };
-  xhr.send();
-}
-
-init();
+buildNav();
+filterBy(activeFilter, null);
 </script>
 </body>
 </html>
